@@ -101,11 +101,27 @@ if soru := st.chat_input("Enes.AI'a bir şey sor..."):
         st.markdown(soru)
     st.session_state.mesajlar.append({"rol": "user", "icerik": soru})
 
-    # Asistan cevabı (Decorator sayesinde artık rate limite karşı korumalı)
+    st.chat_message("user").markdown(soru)
+    st.session_state.mesajlar.append({"rol": "user", "icerik": soru})
+
     with st.chat_message("assistant"):
         try:
-            cevap = guvenli_mesaj_gonder(st.session_state.sohbet, soru)
+            # KRİTİK NOKTA: Gemini'ye göndermeden önce rolleri onun anlayacağı dile çeviriyoruz
+            gemini_gecmisi = []
+            for m in st.session_state.mesajlar[:-1]: # Son mesaj hariç geçmişi paketle
+                rol = "model" if m["rol"] == "assistant" else "user"
+                gemini_gecmisi.append({"role": rol, "parts": [m["icerik"]]})
+            
+            # Yeni bir chat oturumu başlat (her seferinde temiz ve doğru geçmişle)
+            sohbet_yenilenmiş = model.start_chat(history=gemini_gecmisi)
+            cevap = sohbet_yenilenmiş.send_message(soru)
+            
             st.markdown(cevap.text)
             st.session_state.mesajlar.append({"rol": "assistant", "icerik": cevap.text})
+            
         except Exception as e:
             st.error(f"Hata detayı: {e}")
+            # Hata olursa sayfayı yenilemek bağlantıyı sıfırlar
+            if st.button("Sohbeti Sıfırla ve Yeniden Başla"):
+                st.session_state.mesajlar = []
+                st.rerun()
