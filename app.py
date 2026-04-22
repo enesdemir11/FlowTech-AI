@@ -79,12 +79,6 @@ def hafizayi_ozetle_ve_yenile():
 # 4. Streamlit Hafızası (Session State)
 if "mesajlar" not in st.session_state:
     st.session_state.mesajlar = []
-    st.session_state.sohbet = client.chats.create(
-        model="gemini-2.5-flash",
-        config=types.GenerateContentConfig(
-            system_instruction=benim_karakterim,
-        )
-    )
 
 # 5. Eski Mesajları Ekrana Çiz
 for mesaj in st.session_state.mesajlar:
@@ -93,35 +87,33 @@ for mesaj in st.session_state.mesajlar:
 
 # 6. Kullanıcıdan Yeni Mesaj Alma Kutusu
 if soru := st.chat_input("Enes.AI'a bir şey sor..."):
-    # Yeni soru geldiğinde önce hafızanın şişip şişmediğini kontrol et
-    hafizayi_ozetle_ve_yenile()
-
-    # Kullanıcı mesajını ekrana çiz ve kaydet
+    # Mesajı ekrana bas ve hafızaya TEK SEFER ekle
     with st.chat_message("user"):
         st.markdown(soru)
     st.session_state.mesajlar.append({"rol": "user", "icerik": soru})
 
-    st.chat_message("user").markdown(soru)
-    st.session_state.mesajlar.append({"rol": "user", "icerik": soru})
-
     with st.chat_message("assistant"):
         try:
-            # KRİTİK NOKTA: Gemini'ye göndermeden önce rolleri onun anlayacağı dile çeviriyoruz
+            # Gemini'ye göndermeden önce rolleri çeviriyoruz (Tercümanlık)
             gemini_gecmisi = []
-            for m in st.session_state.mesajlar[:-1]: # Son mesaj hariç geçmişi paketle
+            for m in st.session_state.mesajlar[:-1]: 
                 rol = "model" if m["rol"] == "assistant" else "user"
                 gemini_gecmisi.append({"role": rol, "parts": [m["icerik"]]})
             
-            # Yeni bir chat oturumu başlat (her seferinde temiz ve doğru geçmişle)
-            sohbet_yenilenmiş = model.start_chat(history=gemini_gecmisi)
-            cevap = sohbet_yenilenmiş.send_message(soru)
+            # BURASI KRİTİK: 'model' yerine 'client' kullanarak yeni bir chat başlatıyoruz
+            sohbet_yenilenmis = client.chats.create(
+                model="gemini-2.0-flash", # Kullandığın model ismini buraya yaz
+                config=types.GenerateContentConfig(system_instruction=benim_karakterim),
+                history=gemini_gecmisi
+            )
+            
+            cevap = sohbet_yenilenmis.send_message(soru)
             
             st.markdown(cevap.text)
             st.session_state.mesajlar.append({"rol": "assistant", "icerik": cevap.text})
             
         except Exception as e:
             st.error(f"Hata detayı: {e}")
-            # Hata olursa sayfayı yenilemek bağlantıyı sıfırlar
-            if st.button("Sohbeti Sıfırla ve Yeniden Başla"):
+            if st.button("Sohbeti Sıfırla"):
                 st.session_state.mesajlar = []
                 st.rerun()
