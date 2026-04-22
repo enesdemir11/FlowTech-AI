@@ -87,36 +87,36 @@ for mesaj in st.session_state.mesajlar:
 
 # 6. Kullanıcıdan Yeni Mesaj Alma Kutusu
 if soru := st.chat_input("Enes.AI'a bir şey sor..."):
-    # 1. Kullanıcı mesajını ekrana bas ve hafızaya ekle (Sadece 1 kez!)
+    # 1. Kullanıcı mesajını ekrana bas ve listeye TEK SEFER ekle
     with st.chat_message("user"):
         st.markdown(soru)
     st.session_state.mesajlar.append({"rol": "user", "icerik": soru})
 
     with st.chat_message("assistant"):
         try:
-            # 2. Gemini'nin beklediği o hassas formatı hazırlıyoruz (Sözlük yapısı)
+            # 2. Gemini'nin titiz olduğu veri formatını hazırlıyoruz (parts içindeki text yapısı)
             gemini_gecmisi = []
             for m in st.session_state.mesajlar[:-1]: # Son soru hariç geçmişi paketle
                 rol = "model" if m["rol"] == "assistant" else "user"
-                # Hatanın çözümü burası: İçeriği {"text": ...} sözlüğü içine alıyoruz
                 gemini_gecmisi.append({"role": rol, "parts": [{"text": m["icerik"]}]})
             
-            # 3. Yeni bir chat oturumu başlat
+            # 3. Belirlediğin 2.5 modeli ile bağlantıyı kuruyoruz
             sohbet_yenilenmis = client.chats.create(
-                model="gemini-1.5-flash", # Limit hatası almamak için 1.5 deniyoruz
+                model="gemini-2.5-flash", 
                 config=types.GenerateContentConfig(system_instruction=benim_karakterim),
                 history=gemini_gecmisi
             )
             
-            # 4. Cevabı al ve ekrana bas
+            # 4. Yanıtı al, ekrana bas ve hafızaya kaydet
             cevap = sohbet_yenilenmis.send_message(soru)
             
             st.markdown(cevap.text)
             st.session_state.mesajlar.append({"rol": "assistant", "icerik": cevap.text})
             
         except Exception as e:
+            # Limit (429) veya diğer hatalar için kullanıcı dostu uyarı
             if "429" in str(e):
-                st.warning("🤖 Limit doldu, 1 dakika bekleyip tekrar dene!")
+                st.warning("🤖 Limit doldu! Gemini 2.5 şu an çok talep görüyor, lütfen bir dakika bekleyip dene.")
             else:
                 st.error(f"Hata detayı: {e}")
             
