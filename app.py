@@ -15,7 +15,7 @@ else:
 
 # --- 1. SAYFA AYARLARI (Kurumsal Görünüm) ---
 st.set_page_config(
-    page_title="FlowTech AI", 
+    page_title="ERPnDIP", 
     page_icon=logo_image, 
     layout="centered" 
 )
@@ -66,7 +66,7 @@ with st.sidebar:
         st.rerun()
 
 # --- 4. ANA EKRAN BAŞLIĞI ---
-st.title("FlowTech AI")
+st.title("ERPnDIP AI")
 st.caption("Your Industrial Solutions Partner.")
 st.write("---") 
 
@@ -81,7 +81,7 @@ except Exception as e:
 
 # --- 6. ENDÜSTRİYEL KARAKTER (SYSTEM PROMPT) ---
 benim_karakterim = """
-Senin adın FlowTech AI. Sen, makine, elektrik, teknik donanım ve endüstriyel sistemler konusunda 
+Sen ERPnDIP AI'ın yapay zekasısın ve adın Erper. Sen, makine, elektrik, teknik donanım ve endüstriyel sistemler konusunda 
 uzmanlaşmış profesyonel bir 'Endüstriyel Çözüm Ortağı' yapay zekasısın.
 Cevapların her zaman teknik açıdan doğru, resmi, kurumsal ve net olmalıdır. 
 Kullanıcılara bir mühendislik danışmanı gibi yaklaşmalı; gereksiz uzatmalardan kaçınmalı ve çözüm odaklı olmalısın.
@@ -101,7 +101,7 @@ def rate_limit_korumasi(max_deneme=3, baslangic_bekleme=2):
                 except APIError as e:
                     if e.code == 429: # API Limiti aşıldı hatası
                         if deneme == max_deneme - 1:
-                            st.error("Enes.AI şu an çok yoğun. Lütfen 1-2 dakika sonra tekrar deneyin.")
+                            st.error("Erper şu an çok yoğun. Lütfen 1-2 dakika sonra tekrar deneyin.")
                             raise e
                         st.toast(f"API limiti aşıldı. {bekleme} saniye bekleniyor... (Deneme {deneme+1}/{max_deneme})")
                         time.sleep(bekleme)
@@ -154,7 +154,7 @@ for mesaj in st.session_state.mesajlar:
         st.markdown(mesaj["icerik"])
 
 # 6. Kullanıcıdan Yeni Mesaj Alma Kutusu
-if soru := st.chat_input("Enes.AI'a bir şey sor..."):
+if soru := st.chat_input("Erper'a bir şey sor..."):
     # 1. Kullanıcı mesajını ekrana bas ve listeye TEK SEFER ekle
     with st.chat_message("user"):
         st.markdown(soru)
