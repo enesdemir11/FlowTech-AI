@@ -23,12 +23,12 @@ st.set_page_config(
 # --- 2. KURUMSAL TASARIM (CSS) ---
 st.markdown("""
     <style>
-    /* 1. Genel Ana Ekran ve En Alt Çerçeveyi Koyu Temaya Zorla */
-    .stApp, [data-testid="stAppViewContainer"], [data-testid="stBottomBlock"], [data-testid="stBottomBlock"] > div {
+    /* 1. Genel Ana Ekranı Koyu Temaya Zorla */
+    .stApp, [data-testid="stAppViewContainer"] {
         background-color: #121212 !important;
     }
     
-    /* 2. Yan Menü (Sidebar) Arka Planı (Ana ekrandan çok hafif farklı bir siyah) */
+    /* 2. Yan Menü (Sidebar) Arka Planı */
     [data-testid="stSidebar"] {
         background-color: #18181B !important; 
     }
@@ -38,7 +38,7 @@ st.markdown("""
         background-color: rgba(0,0,0,0) !important; 
     }
     
-    /* 4. Ekrandaki TÜM metinleri açık renge zorla (Light Mode çakışmasını engeller) */
+    /* 4. Ekrandaki metinleri açık renge zorla */
     .stApp *, [data-testid="stSidebar"] * {
         color: #E0E0E0 !important;
     }
@@ -54,15 +54,29 @@ st.markdown("""
     /* 6. AI Mesajı Kutusu (ED Logosu Turuncu Vurgulu) */
     [data-testid="stChatMessage"]:nth-child(even) {
         background-color: #18181B !important; 
-        border-left: 3px solid #E67E22 !important; /* ED Logosundaki Turuncu renk eklendi */
+        border-left: 3px solid #E67E22 !important; 
         border-radius: 6px !important;
         margin-bottom: 15px !important;
     }
     
-    /* 7. Mesaj Yazma Kutusu (Chat Input) */
+    /* 7. EN ALT BÖLÜM VE MESAJ YAZMA KUTUSU (BEYAZLIK DÜZELTMESİ) */
+    [data-testid="stBottomBlock"], [data-testid="stBottomBlock"] > div {
+        background-color: #121212 !important; /* Alt çerçevenin dışını siyah yap */
+    }
+    
     [data-testid="stChatInput"] {
-        background-color: #1E293B !important;
+        background-color: #1E293B !important; /* Kutunun dış çerçevesi */
         border: 1px solid #334155 !important;
+    }
+    
+    [data-testid="stChatInputTextArea"] {
+        background-color: transparent !important; /* İç metin alanını şeffaf yapıp dış rengi almasını sağla */
+        color: #E0E0E0 !important; /* Yazı rengini beyaz/gri yap */
+    }
+
+    /* 8. SAĞ ÜSTTEKİ SPOR EMOJİLERİNİ (STATUS WIDGET) GİZLE */
+    [data-testid="stStatusWidget"] {
+        display: none !important;
     }
     </style>
     """, unsafe_allow_html=True)
