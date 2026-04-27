@@ -25,24 +25,39 @@ st.markdown("""
     <style>
     /* Genel arka plan: Profesyonel Koyu Grafit/Siyah */
     .stApp {
-        background-color: #121212;
-        color: #E0E0E0;
+        background-color: #121212 !important;
     }
     
-    /* Kullanıcı Mesajı: Teknik ve metalik mavi-gri (Slate) */
+    /* Ekrandaki TÜM metinleri açık renge zorla (Light Mode çakışmasını engeller) */
+    .stApp, .stApp p, .stApp h1, .stApp h2, .stApp h3, .stApp span, [data-testid="stMarkdownContainer"] * {
+        color: #E0E0E0 !important;
+    }
+    
+    /* Kullanıcı Mesajı Kutusu */
     [data-testid="stChatMessage"]:nth-child(odd) {
-        background-color: #1E293B; 
-        border: 1px solid #334155;
-        border-radius: 6px; 
-        margin-bottom: 15px;
+        background-color: #1E293B !important; 
+        border: 1px solid #334155 !important;
+        border-radius: 6px !important; 
+        margin-bottom: 15px !important;
     }
 
-    /* AI Mesajı: Temiz, minimalist siyah ve ince teknoloji vurgusu */
+    /* AI Mesajı Kutusu */
     [data-testid="stChatMessage"]:nth-child(even) {
-        background-color: #18181B; 
-        border-left: 3px solid #38BDF8; 
-        border-radius: 6px;
-        margin-bottom: 15px;
+        background-color: #18181B !important; 
+        border-left: 3px solid #38BDF8 !important; 
+        border-radius: 6px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    /* En alttaki mesaj yazma kutusunu (Chat Input) da koyu temaya uydur */
+    [data-testid="stChatInput"] {
+        background-color: #1E293B !important;
+        border: 1px solid #334155 !important;
+    }
+    
+    /* Mesaj yazma kutusunun içindeki metinler */
+    [data-testid="stChatInput"] * {
+        color: #E0E0E0 !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -81,7 +96,7 @@ except Exception as e:
 
 # --- 6. ENDÜSTRİYEL KARAKTER (SYSTEM PROMPT) ---
 benim_karakterim = """
-Sen ERPnDIP AI'ın yapay zekasısın ve adın Erper. Sen, makine, elektrik, teknik donanım ve endüstriyel sistemler konusunda 
+Adın Erper ve ERPnDIP tarafından geliştirilmiş bir yapay zekasın. Sen, makine, elektrik, teknik donanım ve endüstriyel sistemler konusunda 
 uzmanlaşmış profesyonel bir 'Endüstriyel Çözüm Ortağı' yapay zekasısın.
 Cevapların her zaman teknik açıdan doğru, resmi, kurumsal ve net olmalıdır. 
 Kullanıcılara bir mühendislik danışmanı gibi yaklaşmalı; gereksiz uzatmalardan kaçınmalı ve çözüm odaklı olmalısın.
