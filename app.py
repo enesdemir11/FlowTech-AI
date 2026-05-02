@@ -60,7 +60,8 @@ def dosya_oku(file):
         return video_file, "video"
         
     return None, None
-
+    
+    
 # --- LOGO YÜKLEME ---
 # Uzantı .png olarak güncellendi
 logo_path = "logo.png"
